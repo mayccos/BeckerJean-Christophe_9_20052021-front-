@@ -53,7 +53,7 @@ export default () => {
                     <label for="commentary" class="bold-label">Commentaire</label>
                     <textarea class="form-control blue-border" data-testid="commentary" rows="3"></textarea>
                   </div>
-                  <div class="col-half" data-error="Seuls les format .png, .jpeg, .jpg sont acceptés">
+                  <div class="col-half" data-error="Seuls les format .png, .jpeg, .jpg sont acceptés.">
                     <label for="file" class="bold-label">Justificatif</label>
                     <input required type="file" class="form-control blue-border" data-testid="file" accept=".jpg, .png, .jpeg" />
                     <p>Formats de fichier acceptés : jpg, png, jpeg</p>
