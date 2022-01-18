@@ -48,6 +48,7 @@ export default class NewBill {
         this.fileName = fileName
       }).catch(error => console.error(error))
       fileInputParent.setAttribute("data-error-visible", false)
+      
     } else {
       fileInputParent.setAttribute("data-error-visible", true)
       fileInput.value = ''
