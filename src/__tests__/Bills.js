@@ -13,6 +13,13 @@ import axios from "axios";
 jest.mock('axios');
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
+    test("Then title page and newBill button should be displayed", () => {
+      const html = BillsUI({ data: [] });
+      document.body.innerHTML = html;
+
+      expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
+      expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
+    })
     test("Then bill icon in vertical layout should be highlighted", () => {
       axios.bills = () => ({ get: jest.fn().mockResolvedValue() });
 
@@ -33,16 +40,50 @@ describe("Given I am connected as an employee", () => {
 			expect(icon.classList.contains("active-icon")).toBeTruthy();
       
     });
-    test("then the loader must appear before the tickets are displayed", () => {
-      const html = BillsUI({ loading: true });
+    
+  });
+  describe("When  an error is detected", () => {
+    test('Then Error page should be rendered', () => {
+      const html = BillsUI({
+        data: [],
+        loading: false,
+        error: 'some error message'
+      });
       document.body.innerHTML = html;
-      expect(screen.getAllByText("Loading...")).toBeTruthy();
-    });
-    test("then the error message must appear if the tickets can't be displayed", () => {
-      const html = BillsUI({ error: "some error message" });
+      expect(screen.getAllByText('Erreur')).toBeTruthy();
+    })
+
+  });
+  describe("When Bill page is loading", () => {
+    test('Then Loading page should be rendered', () => {
+      const html = BillsUI({
+        data: [],
+        loading: true
+      });
       document.body.innerHTML = html;
-      expect(screen.getAllByText("Erreur")).toBeTruthy();
+      expect(screen.getAllByText('Loading...')).toBeTruthy();
     });
+  });
+
+  describe("When Bill's list are loaded",() =>{
+    test("Then bill's data should be displayed", () => {
+      const html = BillsUI({ data: bills });
+      document.body.innerHTML = html;
+      const billType = screen.getAllByTestId("type");
+      const billName = screen.getAllByTestId("name");
+      const billDate = screen.getAllByTestId("date");
+      const billAmount = screen.getAllByTestId("amount");
+      const billStatus = screen.getAllByTestId("status");
+      const billIcon = screen.getAllByTestId("icon-eye");
+
+      expect(billType.length).toBeGreaterThan(0);
+      expect(billName.length).toBeGreaterThan(0);
+      expect(billDate.length).toBeGreaterThan(0);
+      expect(billAmount.length).toBeGreaterThan(0);
+      expect(billStatus.length).toBeGreaterThan(0);
+      expect(billIcon.length).toBeGreaterThan(0);
+    });
+
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -50,7 +91,8 @@ describe("Given I am connected as an employee", () => {
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
-    })
+    });
+    
   });
   
   describe("When I click on an icon eye", () => {
@@ -120,11 +162,13 @@ describe("Given I am connected as an employee", () => {
         expect(screen.getByText("Envoyer une note de frais")).toBeTruthy();
     });
   });
+  
 })
 
 
 
 // test d'integration GET
+
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to Bills page", () => {
     test("fetches bills from mock API GET", async () => {

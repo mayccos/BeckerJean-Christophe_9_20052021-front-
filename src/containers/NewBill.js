@@ -6,6 +6,7 @@ export default class NewBill {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
+   
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
     formNewBill.addEventListener("submit", this.handleSubmit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
@@ -17,14 +18,15 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const fileTypes = [
-      'image/jpeg',
-      'image/jpg',
-      'image/png'
-    ]
-    const fileInputParent = this.document.querySelector(`input[data-testid="file"]`).parentNode;
-    const fileInput = this.document.querySelector(`input[data-testid="file"]`)
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const inputField = this.document.querySelector(`input[data-testid="file"]`);
+    const file = inputField.files[0];
+
+    // Check if input file have a format accepted
+    if ( /\.(jpe?g|png|gif)$/i.test(file?.name) === false ) { 
+      alert("Veuillez choisir un format d'image accepté : .jpg, .jpeg, .png");
+      inputField.value = "";
+      return;
+    }
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
@@ -32,8 +34,7 @@ export default class NewBill {
     formData.append('file', file)
     formData.append('email', email)
 
-    if (fileTypes.includes(file.type)) {
-      this.store
+    if (this.store) this.store
       .bills()
       .create({
         data: formData,
@@ -41,18 +42,13 @@ export default class NewBill {
           noContentType: true
         }
       })
-      .then(({fileUrl, key}) => {
+      .then(({ fileUrl, key }) => {
         console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
-      }).catch(error => console.error(error))
-      fileInputParent.setAttribute("data-error-visible", false)
-      
-    } else {
-      fileInputParent.setAttribute("data-error-visible", true)
-      fileInput.value = ''
-    }
+      }).catch(error => console.error(error));
+
   }
   handleSubmit = e => {
     e.preventDefault()
@@ -74,7 +70,7 @@ export default class NewBill {
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
-
+/*istanbul ignore next*/
   // not need to cover this function by tests
   updateBill = (bill) => {
     if (this.store) {
