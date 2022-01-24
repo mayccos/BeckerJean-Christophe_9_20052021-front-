@@ -20,6 +20,7 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
+  if( typeof data === "undefined" || data.length === 0 ) { return "" }
   const orderedDatesByAntiChrono = data.sort((a, b) => (a.date < b.date) ? 1 : -1)
   return (data && data.length) ? orderedDatesByAntiChrono.map(bill => row(bill)).join("") : ""
 }
