@@ -43,7 +43,7 @@ describe("Given I am connected as an employee", () => {
     
   });
   describe("When  an error is detected", () => {
-    test('Then Error page should be rendered', () => {
+    test('Then Error page should be displayed', () => {
       const html = BillsUI({
         data: [],
         loading: false,
@@ -55,7 +55,7 @@ describe("Given I am connected as an employee", () => {
 
   });
   describe("When Bill page is loading", () => {
-    test('Then Loading page should be rendered', () => {
+    test('Then Loading page should be displayed', () => {
       const html = BillsUI({
         data: [],
         loading: true
@@ -147,14 +147,14 @@ describe("Given I am connected as an employee", () => {
             document.body.innerHTML = ROUTES({ pathname });
         };
         const store = null;
-        const billsClass = new Bills({
+        const billsNews = new Bills({
             document,
             onNavigate,
             store,
             localStorage: window.localStorage,
         });
 
-        const handleClickNewBill = jest.fn(billsClass.handleClickNewBill);
+        const handleClickNewBill = jest.fn(billsNews.handleClickNewBill);
         const newBillButton = screen.getByTestId("btn-new-bill");
         newBillButton.addEventListener("click", handleClickNewBill);
         userEvent.click(newBillButton);

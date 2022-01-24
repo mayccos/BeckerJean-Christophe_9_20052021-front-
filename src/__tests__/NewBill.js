@@ -111,67 +111,20 @@ describe("Given I am connected as an employee", () => {
         expect(inputFile.value).toEqual("");
       });
     });
-    describe("When click on submit button of form new bill", () => {
-      test("Then should called handleSubmit function", () => {
-        // Build DOM new bill
-        const html = NewBillUI();
-        document.body.innerHTML = html;
-
-        // function handleSubmit()
-        const store = null;
-        const onNavigate = (pathname) => {
-          document.body.innerHTML = pathname;
-        };
-
-        const thisNewBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage });
-        const submitFormNewBill = screen.getByTestId("form-new-bill");
-
-        expect(submitFormNewBill).toBeTruthy();
-
-        const mockHandleSubmit = jest.fn(thisNewBill.handleSubmit);
-        submitFormNewBill.addEventListener("submit", mockHandleSubmit);
-        fireEvent.submit(submitFormNewBill);
-
-        expect(mockHandleSubmit).toHaveBeenCalled();
-      });
-      test("Then bill form is submited", () => {
-        // Build Dom New bill
-        const html = NewBillUI();
-        document.body.innerHTML = html;
-
-        // function createBill()
-        const store = null;
-        const thisNewBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage });
-
-        const mockCreateBillFn = jest.fn(thisNewBill.updateBill);
-        const submitFormNewBill = screen.getByTestId("form-new-bill");
-
-        submitFormNewBill.addEventListener("submit", mockCreateBillFn);
-        fireEvent.submit(submitFormNewBill);
-
-        expect(mockCreateBillFn).toHaveBeenCalled();
-        expect(screen.getAllByText("Envoyer une note de frais")).toBeTruthy();
-      });
-    })
 
     describe("When I upload an image in file input", () => {
       test("Then the file name should be displayed into the input", () => {
-        // Build DOM for new bill page
         const html = NewBillUI();
         document.body.innerHTML = html;
-
-        // function handleChangeFile()
         
         const onNavigate = (pathname) => {
           document.body.innerHTML = pathname
         };
 
-        const thisNewBill = new NewBill({ document, onNavigate, store: null, localStorage });
-        const changeFile = jest.fn(thisNewBill.handleChangeFile);
+        const newBill = new NewBill({ document, onNavigate, store: null, localStorage });
+        const changeFile = jest.fn(newBill.handleChangeFile);
         const file = screen.getByTestId("file");
         
-
-        // Simulate if the file's extension is accepted
         file.addEventListener("change", changeFile);
         fireEvent.change(file, {
           target: {
@@ -182,10 +135,45 @@ describe("Given I am connected as an employee", () => {
         expect(changeFile).toHaveBeenCalled();
         expect(file.files[0].name).toBe("test.jpg");
       });
-
-     
     })
+    describe("When click on submit button of form new bill", () => {
+      test("Then should called handleSubmit function", () => {
+        const html = NewBillUI();
+        document.body.innerHTML = html;
 
+        const store = null;
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = pathname;
+        };
+
+        const newBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage });
+        const newBillSubmitted = screen.getByTestId("form-new-bill");
+
+        expect(newBillSubmitted).toBeTruthy();
+
+        const handleSubmit = jest.fn(newBill.handleSubmit);
+        newBillSubmitted.addEventListener("submit", handleSubmit);
+        fireEvent.submit(newBillSubmitted);
+
+        expect(handleSubmit).toHaveBeenCalled();
+      });
+      test("Then bill form is submitted", () => {
+        const html = NewBillUI();
+        document.body.innerHTML = html;
+
+        const store = null;
+        const newBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage });
+
+        const createdBill = jest.fn(newBill.updateBill);
+        const newBillSubmitted = screen.getByTestId("form-new-bill");
+
+        newBillSubmitted.addEventListener("submit", createdBill);
+        fireEvent.submit(newBillSubmitted);
+
+        expect(createdBill).toHaveBeenCalled();
+        expect(screen.getAllByText("Envoyer une note de frais")).toBeTruthy();
+      });
+    })
   });
 })
 // Test d'integration post

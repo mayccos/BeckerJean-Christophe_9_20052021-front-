@@ -86,6 +86,7 @@ export default class Login {
       })})
       .then(() => {
         console.log(`User with ${user.email} is created`)
+        
         return this.login(user)
       })
     } else {
